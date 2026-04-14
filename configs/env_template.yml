@@ -1,0 +1,6 @@
+root_dir: ../
+image_root_dir: /your/path/to/image/directory/
+embeddings_root_dir: embeddings
+results_root_dir: results
+analysis_results_root_dir: results/analysis
+temp_results_root_dir: results/temp

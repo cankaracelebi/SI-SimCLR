@@ -1,0 +1,39 @@
+# notebooks outputs
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+data/*.csv
+logs/
+
+debug/
+
+# outputs / artifacts
+img_samples/
+*.html
+results/
+embeddings_analysis/results/*
+embeddings_analysis/*/*.pdf
+embeddings_analysis/*.pdf
+
+embeddings_analysis/Fig_3_atlas_generation
+
+embeddings/*
+
+supplementary_material/
+
+# do not commit and push env for the moment
+requirements.txt
+devfile.yaml
+environment.yml
+
+# other files i need to fix before pushing
+comparison_20260306.py
+comparison_tau_2026.ipynb
+comparison_updated.py
+compute_pretrained_resnet_emb.py
+
+scripts_grid/
+
+debug.ipynb
+README.md
+LICENSE
