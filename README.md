@@ -4,6 +4,8 @@ This repository contains the code for our paper [...]. It includes the implement
 
 ![image](abstract.jpg)
 
+The fluorescence microscopy astrocyte dataset employed to train our models is accessible on [Zenodo](10.5281/zenodo.19553134)
+
 Codebase lineage: The foundational SimCLR framework in this repository is adapted from the PyTorch implementation of [SCAN: Learning to Classify Images without Labels](https://doi.org/10.1007/978-3-030-58607-2_16) (Van Gansbeke et al.). The original SCAN code was released under a [Creative Commons license](https://github.com/wvangansbeke/Unsupervised-Classification/blob/master/LICENSE).
 We repurposed their base SimCLR structure and extended the framework by introducing our **SI-SimCLR** formulation and downstream analysis.
 
