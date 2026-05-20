@@ -1,7 +1,6 @@
 """
 Original version by Wouter Van Gansbeke, Simon Vandenhende
 Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by-nc/4.0/)
-Modified by Elisa Messori
 """
 import argparse
 import os
