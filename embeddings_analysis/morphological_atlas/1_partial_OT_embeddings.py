@@ -9,17 +9,17 @@ from joblib import Parallel, delayed
 data_root = "../../embeddings/240813_5/"
 emb_path = data_root + "E1_emb.feather"
 
-emb = pd.read_feather(emb_path)
-emb_cols = [f'emb{i}' for i in range(1, 513)]
+annotations_df = pd.read_feather(emb_path)
+emb_cols = [col for col in annotations_df.columns if col.startswith('emb')]
 
-print('columns:', emb.columns)
-print('shape:', emb.shape)
+print('columns:', annotations_df.columns)
+print('shape:', annotations_df.shape)
 
-u_cluster, c_cluster = np.unique(np.array(emb['cluster'].values), return_counts=True)
+u_cluster, c_cluster = np.unique(np.array(annotations_df['cluster'].values), return_counts=True)
 print('Cluster labels:', u_cluster, c_cluster)
 
-embeddings = np.array(emb[emb_cols].values).astype(np.float32)
-clusters = np.array(emb['cluster'].values)
+embeddings = np.array(annotations_df[emb_cols].values).astype(np.float32)
+clusters = np.array(annotations_df['cluster'].values)
 n_clusters = len(u_cluster)
 
 metric = 'euclidean'  # 'euclidean', 'sqeuclidean', 'cityblock'

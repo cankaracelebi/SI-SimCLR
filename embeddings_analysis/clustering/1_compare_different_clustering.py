@@ -38,8 +38,6 @@ np.random.seed(0)
 warnings.filterwarnings('ignore')
 
 single_exps = ['E1']
-emb_type = 'deep'
-assert emb_type in ['handcrafted', 'deep']
 
 x = '240813_5'
 label_of_interest = 'mut_cond'
@@ -57,12 +55,12 @@ name_file = os.path.join(saving_dir, f'clustering_algo_comparison_{("_").join(si
 
 print('Results will be saved as: ', name_file, flush=True)
 
-annotations_df, raw_emb = setup_experiment(x, single_exps)
-if emb_type == 'deep':
-    emb = raw_emb
-else:
-    hand_crafted_annotations, hc_features = load_process_handcrafted_features(annotations_df)
-    emb = hc_features
+data_root = "../../embeddings/240813_5/"
+emb_path = data_root + "E1_emb.feather"
+
+annotations_df = pd.read_feather(emb_path)
+emb_cols = [col for col in annotations_df.columns if col.startswith('emb')]
+emb = np.array(annotations_df[emb_cols].values).astype(np.float32)
 
 
 embeddings = {}
