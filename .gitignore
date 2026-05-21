@@ -2,10 +2,12 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
+configs/env.yml
 data/*.csv
 logs/
-
 debug/
+*.pyc
+apptainer/
 
 # outputs / artifacts
 img_samples/
@@ -14,11 +16,13 @@ results/
 embeddings_analysis/results/*
 embeddings_analysis/*/*.pdf
 embeddings_analysis/*.pdf
-
 embeddings_analysis/Fig_3_atlas_generation
+embeddings_analysis/morphological_atlas/*.csv
+embeddings_analysis/morphological_atlas/*.pdf
+embeddings_analysis/morphological_atlas/debug*
+
 
 embeddings/*
-
 supplementary_material/
 
 # do not commit and push env for the moment
@@ -35,5 +39,3 @@ compute_pretrained_resnet_emb.py
 scripts_grid/
 
 debug.ipynb
-README.md
-LICENSE
