@@ -21,6 +21,7 @@ embeddings_analysis/Fig_3_atlas_generation
 embeddings_analysis/morphological_atlas/*.csv
 embeddings_analysis/morphological_atlas/*.pdf
 embeddings_analysis/morphological_atlas/debug*
+embeddings_analysis/image_classification_plots
 
 
 embeddings/*
@@ -31,7 +32,7 @@ requirements.txt
 devfile.yaml
 environment.yml
 
-# other files i need to fix before pushing
+# other files not related to the paper
 comparison_20260306.py
 comparison_tau_2026.ipynb
 comparison_updated.py
