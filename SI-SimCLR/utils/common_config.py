@@ -76,7 +76,7 @@ def get_model(p, pretrain_path=None):
             from models.resnet_stl import resnet18
             backbone = resnet18()
 
-        elif p['train_db_name'] in ['crop16_EF_2405', 'crop16_EF_2405_adj_single']:
+        elif p['train_db_name'] in ['crop16_EF_2405', 'crop16_EF_2405_adj_single', 'debug']:
             from models.resnet_cifar import resnet18
             backbone = resnet18(p['backbone_dim'])
         
@@ -154,7 +154,7 @@ def get_train_dataset(p, transform,
                       to_adjacent_neighbor_dataset=False,
                       split=None):
 
-    if p['train_db_name'] in ['crop16_EF_2405', 'crop16_EF_2405_adj_single']:
+    if p['train_db_name'] in ['crop16_EF_2405', 'crop16_EF_2405_adj_single', 'debug']:
         from data.acs_dataset import EF_Crop16_AC_2405
         dataset = EF_Crop16_AC_2405(transform=transform, image_root=p.get('image_root_dir', None))
 

@@ -13,7 +13,7 @@ We repurposed their base SimCLR structure and extended the framework by introduc
 
 This document provides a clean, reproducible training workflow for installation on local machine. To launch SI-SimCLR on a cluster, you can use [SI-SimCLR/simclr.sh](SI-SimCLR/simclr.sh).
 
-## Overview
+### Overview
 
 Main training components:
 1. [SI-SimCLR/simclr.py](SI-SimCLR/simclr.py): training entrypoint.
@@ -21,7 +21,7 @@ Main training components:
 3. [configs/debug/simclr_acs.yml](configs/debug/simclr_acs.yml): experiment hyperparameters.
 4. [utils/mypath.py](utils/mypath.py): annotation CSV mapping.
 
-## 1. Installation
+### 1. Installation
 
 Local environment setup (conda):
 
@@ -31,7 +31,7 @@ mamba env create -f environment.yml
 conda activate si-simclr
 ```
 
-## 2. Configure Paths
+### 2. Configure Paths
 
 Edit [configs/env_template.yml](configs/env_template.yml):
 1. image_root_dir: microscopy image directory.
@@ -57,7 +57,7 @@ To use our [astrocyte fluorescence microscopy dataset](10.5281/zenodo.19553134):
 1. upload ```annotations_processed_crops.csv``` to [data](data)
 2. add the corresponding path in [utils/mypath.py](utils/mypath.py)
 
-## 3. Use on Local Machine
+### 3. Use on Local Machine
 
 Run from repository root:
 
@@ -71,14 +71,14 @@ To switch experiments, change only the config_exp argument. The key `pairing_str
 - `adjacent_neighbors` for SI-SimCLR
 - `augmentations` for standard SimCLR
 
-## 4. Use on SLURM
+### 4. Use on SLURM
 Run from ```SI-SimCLR```:
 
 ```bash
 sbatch SI-SimCLR/simclr.sh
 ```
 
-## 5. Output Structure
+### 5. Output Structure
 
 For experiment debug:
 1. results/debug/pretext: model checkpoints.
@@ -86,9 +86,14 @@ For experiment debug:
 3. embeddings/debug: latent embeddings.
 4. results/exp_summary.csv: global training summary table, where information about all your experiments is stored.
 
-## 6. Troubleshooting
+### 6. Troubleshooting
 
 1. Missing images:
 Set image_root_dir correctly in [configs/env.yml](configs/env.yml).
 2. Dataset not implemented:
 Add mapping in [utils/mypath.py](utils/mypath.py).
+
+# Downstream analysis
+Downstream analysis such as identification of phenotypic substates and atlas construction can be done in [embeddings_analysis](embeddings_analysis) using the same environment employed for training with si-simclr.
+
+All sequence data for this project has been deposited at [NCBI GEO database](https://www.ncbi.nlm.nih.gov/geo/) under accession number ```GSE331442```. Code for the corresponding analysis is collected at [embeddings_analysis/molecular_analysis](embeddings_analysis/molecular_analysis) and can be run using the environment specified in the yaml file [embeddings_analysis/molecular_analysis/molecular_analysis_env.yml](embeddings_analysis/molecular_analysis/molecular_analysis_env.yml)
