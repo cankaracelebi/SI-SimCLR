@@ -39,6 +39,7 @@ Edit [configs/env_template.yml](configs/env_template.yml):
 3. results_root_dir: where model checkpoints and summary files are saved.
 4. analysis_results_root_dir: where analysis outputs are saved.
 5. temp_results_root_dir: where temporary analysis outputs are saved.
+
 Afterwards, set the name of the file to ```env.yml```
 
 Example:
