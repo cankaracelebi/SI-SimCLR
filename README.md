@@ -93,7 +93,7 @@ Set image_root_dir correctly in [configs/env.yml](configs/env.yml).
 2. Dataset not implemented:
 Add mapping in [utils/mypath.py](utils/mypath.py).
 
-# Downstream analysis
+## Downstream analysis
 Downstream analysis such as identification of phenotypic substates and atlas construction can be done in [embeddings_analysis](embeddings_analysis) using the same environment employed for training with si-simclr.
 
 All sequence data for this project has been deposited at [NCBI GEO database](https://www.ncbi.nlm.nih.gov/geo/) under accession number ```GSE331442```. Code for the corresponding analysis is collected at [embeddings_analysis/molecular_analysis](embeddings_analysis/molecular_analysis) and can be run using the environment specified in the yaml file [embeddings_analysis/molecular_analysis/molecular_analysis_env.yml](embeddings_analysis/molecular_analysis/molecular_analysis_env.yml)
