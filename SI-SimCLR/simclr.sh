@@ -14,8 +14,14 @@
 # 1. Setup Environment
 mkdir -p logs
 
-source /storage/homefs/${USER}/miniconda3/bin/activate ac_clustering_og
-conda activate ac_clustering_og
+ENV_NAME="${ENV_NAME:-ac_simclr}"
+
+if [[ -n "${CONDA_EXE}" && -f "/storage/homefs/${USER}/miniconda3/bin/activate" ]]; then
+    source "/storage/homefs/${USER}/miniconda3/bin/activate"
+    conda activate "${ENV_NAME}"
+else
+    echo "Conda not available; using current Python environment."
+fi
 
 echo "Starting training on $(hostname)"
 
@@ -37,7 +43,7 @@ fi
 
 TRAIN_DIR="${REPO_ROOT}/SI-SimCLR"
 CONFIG_ENV="${REPO_ROOT}/configs/env.yml"
-CONFIG_EXP="${REPO_ROOT}/configs/smoke_5ep/simclr_acs.yml"
+CONFIG_EXP="${REPO_ROOT}/configs/debug/simclr_acs.yml"
 
 if [[ ! -f "${CONFIG_ENV}" ]]; then
     echo "Missing env config: ${CONFIG_ENV}"
@@ -58,7 +64,8 @@ export PYTHONPATH="${REPO_ROOT}:${TRAIN_DIR}"
 start=$(date +%s)
 
 # Run training
-python simclr.py \
+PYTHON_EXE="${PYTHON_EXE:-python}"
+"${PYTHON_EXE}" simclr.py \
     --config_env "${CONFIG_ENV}" \
     --config_exp "${CONFIG_EXP}"
 

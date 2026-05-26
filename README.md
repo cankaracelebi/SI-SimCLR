@@ -2,7 +2,7 @@
 
 This repository contains the code for our paper [...]. It includes the implementation of SI-SimCLR, our custom contrastive learning approach, along with our full analysis pipeline and Docker-based training environments.
 
-![image](abstract.jpg)
+![image](abstract_v2.jpg)
 
 The fluorescence microscopy astrocyte dataset employed to train our models is accessible on [Zenodo](10.5281/zenodo.19553134)
 
@@ -11,9 +11,7 @@ We repurposed their base SimCLR structure and extended the framework by introduc
 
 ## SI-SimCLR Training Guide
 
-This document provides a clean, reproducible training workflow for two use cases:
-1. Local machine
-2. Cluster environment
+This document provides a clean, reproducible training workflow for installation on local machine. To launch SI-SimCLR on a cluster, you can use ```SI-SimCLR/simclr.sh```.
 
 ## Overview
 
@@ -32,10 +30,6 @@ conda install mamba -n base -c conda-forge
 mamba env create -f environment.yml
 conda activate ac_simclr
 ```
-
-Container files available:
-1. [Dockerfile](Dockerfile)
-2. [apptainer/SI-SimCLR.def](apptainer/SI-SimCLR.def)
 
 ## 2. Configure Paths
 
@@ -74,58 +68,6 @@ To switch experiments, change only the config_exp argument. The key `pairing_str
 - `augmentations` for standard SimCLR
 </details>
 
-<details>
-<summary>4. Use Case B: Cluster (Apptainer)</summary>
-
-Apptainer is available on many HPC systems and does not require Docker daemon access at runtime.
-
-Preferred:
-
-```bash
-apptainer build --fakeroot si-simclr.sif apptainer/SI-SimCLR.def
-```
-
-If fakeroot is unavailable:
-
-```bash
-apptainer build --remote si-simclr.sif apptainer/SI-SimCLR.def
-```
-
-### 4.2 Run training on GPU node
-
-```bash
-apptainer exec --nv \
-  -B "$(pwd)":/workspace/SI-SimCLR_public \
-  --pwd /workspace/SI-SimCLR_public \
-  si-simclr.sif \
-  python SI-SimCLR/simclr.py \
-    --config_env configs/env.yml \
-    --config_exp configs/debug/simclr_acs.yml
-```
-</details>
-
-<details>
-<summary>5. Optional: Docker (non-cluster)</summary>
-
-Build:
-
-```bash
-docker build -t si-simclr:latest .
-```
-
-Run:
-
-```bash
-docker run --rm -it --gpus all \
-  -v "$(pwd)":/workspace/SI-SimCLR_public \
-  -w /workspace/SI-SimCLR_public \
-  si-simclr:latest \
-  python SI-SimCLR/simclr.py \
-    --config_env configs/env.yml \
-    --config_exp configs/debug/simclr_acs.yml
-```
-</details>
-
 ## 6. Output Structure
 
 For experiment debug:
@@ -140,7 +82,3 @@ For experiment debug:
 Set image_root_dir correctly in [configs/env.yml](configs/env.yml).
 2. Dataset not implemented:
 Add mapping in [utils/mypath.py](utils/mypath.py).
-3. No CUDA in Apptainer:
-Use --nv and request a GPU node from scheduler.
-4. No Docker available:
-Use the Apptainer path in Section 4.
