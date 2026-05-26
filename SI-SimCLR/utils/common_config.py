@@ -1,8 +1,7 @@
 """
-Authors: Wouter Van Gansbeke, Simon Vandenhende
+Original Authors: Wouter Van Gansbeke, Simon Vandenhende
 Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by-nc/4.0/)
-Modifications by Elisa Messori: added everything related to the astrocytes dataset (datasets loading, trasnformations 
-containing the term 'acs')
+Modifications by Elisa Messori for SI-SimCLR development
 """
 import os
 import math

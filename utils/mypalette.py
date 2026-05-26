@@ -16,8 +16,7 @@ magenta = '#D60078'
 pairing_strategy_palette = {
     'Hand-crafted': '#c0c0c0',                    
     'Pretrained ResNet18': '#d781af',            
-    'Standard SimCLR': '#829fd0',                        
-    'Augmented SimCLR': '#BCA337',              
+    'Standard SimCLR': '#829fd0',         
     'uniDINO': "#37A85D",
     'CellPaint SSL': "#025E21",
     'hand-crafted': '#c0c0c0',
@@ -33,11 +32,11 @@ cell_line_palette = {
     'CTRL2': matplotlib.colors.to_hex(greens_cmap(3)),
     'CTRL4': matplotlib.colors.to_hex(greens_cmap(4)),
     'CTRL5': matplotlib.colors.to_hex(greens_cmap(5)),
-    'GLIA': matplotlib.colors.to_hex(rdpu_cmap(2)),
-    'GLIB': matplotlib.colors.to_hex(rdpu_cmap(3)),
-    'CBI': matplotlib.colors.to_hex(rdpu_cmap(4)),
-    'CBID': matplotlib.colors.to_hex(rdpu_cmap(5)),
-    'CBIE': matplotlib.colors.to_hex(rdpu_cmap(6)),
+    'MUT1': matplotlib.colors.to_hex(rdpu_cmap(2)),
+    'MUT2': matplotlib.colors.to_hex(rdpu_cmap(3)),
+    'MUT5': matplotlib.colors.to_hex(rdpu_cmap(4)),
+    'MUT3': matplotlib.colors.to_hex(rdpu_cmap(5)),
+    'MUT4': matplotlib.colors.to_hex(rdpu_cmap(6)),
 }
 
 mutation_palette = {'CTRL': '#1b5e20', 'VCP': magenta, 'SOD1': SOD1_palette[3], 'ALS': magenta}

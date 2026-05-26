@@ -1,7 +1,7 @@
 """
-Authors: Wouter Van Gansbeke, Simon Vandenhende
+Original Authors: Wouter Van Gansbeke, Simon Vandenhende
 Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by-nc/4.0/)
-Modifications by Elisa Messori (simclr_train function saves embeddings in final epoch)
+Modifications by Elisa Messori for SI-SimCLR development
 """
 import torch
 import numpy as np

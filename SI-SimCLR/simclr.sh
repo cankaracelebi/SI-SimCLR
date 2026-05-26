@@ -14,7 +14,7 @@
 # 1. Setup Environment
 mkdir -p logs
 
-ENV_NAME="${ENV_NAME:-ac_simclr}"
+ENV_NAME="${ENV_NAME:-si-simclr}"
 
 if [[ -n "${CONDA_EXE}" && -f "/storage/homefs/${USER}/miniconda3/bin/activate" ]]; then
     source "/storage/homefs/${USER}/miniconda3/bin/activate"

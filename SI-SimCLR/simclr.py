@@ -1,6 +1,7 @@
 """
-Original version by Wouter Van Gansbeke, Simon Vandenhende
+Original Authors: Wouter Van Gansbeke, Simon Vandenhende
 Licensed under the CC BY-NC 4.0 license (https://creativecommons.org/licenses/by-nc/4.0/)
+Modifications by Elisa Messori for SI-SimCLR development
 """
 import argparse
 import os
