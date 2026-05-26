@@ -9,10 +9,8 @@ def label_mutation(row):
    """
    if row['cell_line'] in ['CTRL1', 'CTRL2', 'CTRL4', 'CTRL5', 'CTRL6', 'CTRL3'] :
       return 'CTRL'
-   elif row['cell_line'] in ['GLIA', 'GLIB', 'CBI', 'CBIE', 'CBID'] :
+   elif row['cell_line'] in ['MUT1', 'MUT2', 'MUT5', 'MUT3', 'MUT4'] :
       return 'VCP'
-   elif row['cell_line'] in ['SOD1-1', 'SOD1-2', 'SOD1-3', 'SOD1-4']:
-      return 'SOD1'
    else:
       raise ValueError(f'Cell line {row["cell_line"]} not recognized')
    

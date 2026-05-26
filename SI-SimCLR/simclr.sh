@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --nodes=1
 #SBATCH --mem=32G
-#SBATCH --time=5:00:00
+#SBATCH --time=1:00:00
 #SBATCH --partition=gpu
 #SBATCH --ntasks=1
 #SBATCH --qos=job_gratis
