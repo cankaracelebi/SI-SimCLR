@@ -1,6 +1,6 @@
 # SI-SimCLR: A spatially informed self-supervised framework for microscopy datasets
 
-This repository contains the code for our paper [...]. It includes the implementation of SI-SimCLR, our custom contrastive learning approach, along with our full analysis pipeline and Docker-based training environments.
+This repository contains the code for our paper [Topology-aware reconstruction of cellular state landscapes from microscopy using self-supervised learning](https://doi.org/10.64898/2026.05.30.728966), available as a preprint on BioRxiv. It includes the implementation of SI-SimCLR, our custom contrastive learning approach, along with our full analysis pipeline and Docker-based training environments.
 
 ![image](abstract_v2.jpg)
 
@@ -11,7 +11,7 @@ We repurposed their base SimCLR structure and extended the framework by introduc
 
 ## SI-SimCLR Training Guide
 
-This document provides a clean, reproducible training workflow for installation on local machine. To launch SI-SimCLR on a cluster, you can use [SI-SimCLR/simclr.sh](SI-SimCLR/simclr.sh).
+This document provides a clean, reproducible training workflow. To launch SI-SimCLR on a cluster, you can use [SI-SimCLR/simclr.sh](SI-SimCLR/simclr.sh).
 
 ### Overview
 
