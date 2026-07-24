@@ -30,7 +30,6 @@ supplementary_material/
 # do not commit and push env for the moment
 requirements.txt
 devfile.yaml
-environment.yml
 
 # other files not related to the paper
 comparison_20260306.py
