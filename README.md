@@ -57,6 +57,8 @@ To use our [astrocyte fluorescence microscopy dataset](10.5281/zenodo.19553134):
 1. upload ```annotations_processed_crops.csv``` to [data](data)
 2. add the corresponding path in [utils/mypath.py](utils/mypath.py)
 
+For testing purposes we provide [data/astro_test.csv](data/astro_test.csv), a subset of annotations accessible on Zenodo.
+
 ### 3. Use on Local Machine
 
 Run from repository root:
@@ -97,3 +99,15 @@ Add mapping in [utils/mypath.py](utils/mypath.py).
 Downstream analysis such as identification of phenotypic substates and atlas construction can be done in [embeddings_analysis](embeddings_analysis) using the same environment employed for training with si-simclr.
 
 All sequence data for this project has been deposited at [NCBI GEO database](https://www.ncbi.nlm.nih.gov/geo/) under accession number ```GSE331442```. Code for the corresponding analysis is collected at [embeddings_analysis/molecular_analysis](embeddings_analysis/molecular_analysis) and can be run using the environment specified in the yaml file [embeddings_analysis/molecular_analysis/molecular_analysis_env.yml](embeddings_analysis/molecular_analysis/molecular_analysis_env.yml)
+
+
+## Dependencies
+The code was tested on Linux (64-bit), using NVIDIA GPU.
+Core dependencies are:
+- Python 3.11
+- Deep learning: PyTorch 2.1.1, Torchvision 0.16.1, PyTorch-CUDA 11.8
+- NumPy 1.26.0, Pandas 2.2.2, Scikit-learn 1.5.2 (with Intel Extension scikit-learn-intelex), SciPy 1.13.0, Statsmodels 0.14.0
+- Computer vision and image processing: OpenCV 4.7.0, Scikit-image 0.20.0, Pillow 10.4.0
+- Data visualization: Matplotlib 3.7.3, Seaborn 0.11.0
+
+Further details are specified in [environment.yml](environment.yml)

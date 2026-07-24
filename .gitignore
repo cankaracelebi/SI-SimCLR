@@ -5,6 +5,7 @@
 configs/env.yml
 configs/240517_11/
 data/*.csv
+!data/*_test.csv
 logs/
 debug/
 *.pyc
