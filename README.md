@@ -30,6 +30,7 @@ conda install mamba -n base -c conda-forge
 mamba env create -f environment.yml
 conda activate si-simclr
 ```
+Downloading the environment should take a few minutes.
 
 ### 2. Configure Paths
 
@@ -57,7 +58,7 @@ To use our [astrocyte fluorescence microscopy dataset](10.5281/zenodo.19553134):
 1. upload ```annotations_processed_crops.csv``` to [data](data)
 2. add the corresponding path in [utils/mypath.py](utils/mypath.py)
 
-For testing purposes we provide [data/astro_test.csv](data/astro_test.csv), a subset of annotations accessible on Zenodo.
+For testing purposes we provide [data/astro_test.csv](data/astro_test.csv), a subset of annotations accessible on Zenodo. On a NVIDIA H100 GPU (32 GB RAM), with a batch size of 64, running for a single epoch (for testing/debugging purposes) requires approximately 7 minutes.
 
 ### 3. Use on Local Machine
 
