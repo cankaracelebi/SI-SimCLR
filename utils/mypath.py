@@ -11,7 +11,7 @@ class MyPath(object):
     def db_root_dir(database='', pairing_strategy=''):
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
         local_annotations = os.path.join(project_root, 'data', 'crop16_EF_2405.csv')
-        test_data = os.path.join(project_root, 'data', 'crop16_EF_2405_test.csv')
+        test_data = os.path.join(project_root, 'data', 'astro_test.csv')
         
         database_paths = {
             'crop16_EF_2405': local_annotations,

@@ -12,6 +12,7 @@ import torch
 import torchvision.transforms as transforms
 from data.augment import Augment, Cutout
 from utils.collate import collate_custom
+from utils.mypath import MyPath
 import torchvision.transforms.functional as TF
 from PIL import Image
 import random
@@ -156,7 +157,11 @@ def get_train_dataset(p, transform,
 
     if p['train_db_name'] in ['crop16_EF_2405', 'crop16_EF_2405_adj_single', 'debug']:
         from data.acs_dataset import EF_Crop16_AC_2405
-        dataset = EF_Crop16_AC_2405(transform=transform, image_root=p.get('image_root_dir', None))
+        dataset = EF_Crop16_AC_2405(
+            root=MyPath.db_root_dir(p['train_db_name']),
+            transform=transform,
+            image_root=p.get('image_root_dir', None),
+        )
 
     else:
         raise ValueError('Invalid train dataset {}'.format(p['train_db_name']))

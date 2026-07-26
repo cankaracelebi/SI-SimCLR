@@ -2,7 +2,7 @@
 #SBATCH --job-name=simclr_train
 #SBATCH --output=logs/simclr_%j.out
 #SBATCH --error=logs/simclr_%j.err
-#SBATCH --gres=gpu:rtx4090:1
+#SBATCH --gres=gpu:h100:1
 #SBATCH --cpus-per-task=8
 #SBATCH --nodes=1
 #SBATCH --mem=32G
@@ -43,7 +43,8 @@ fi
 
 TRAIN_DIR="${REPO_ROOT}/SI-SimCLR"
 CONFIG_ENV="${REPO_ROOT}/configs/env.yml"
-CONFIG_EXP="${REPO_ROOT}/configs/debug/simclr_acs.yml"
+#CONFIG_EXP="${REPO_ROOT}/configs/debug/simclr_acs.yml"
+CONFIG_EXP="/storage/homefs/em25z617/repos/SI-SimCLR_public/configs/debug/simclr_acs.yml"
 
 if [[ ! -f "${CONFIG_ENV}" ]]; then
     echo "Missing env config: ${CONFIG_ENV}"
