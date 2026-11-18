@@ -76,7 +76,7 @@ def main():
     #val_dataset = get_val_dataset(p, val_transforms, to_cropped_neighbor_dataset=True)
     #val_dataloader = get_val_dataloader(p, val_dataset)
     print(f'Dataset contains {len(train_dataset)} train')
-    print(f'In training there will be {train_dataset.repeated_pairs} repeated pairs')
+    print(f"In training there will be {getattr(train_dataset, 'repeated_pairs', 0)} repeated pairs")
 
     # Criterion
     print('Retrieve criterion')
