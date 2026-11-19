@@ -1,0 +1,61 @@
+augmentation_kwargs:
+  color_jitter:
+    brightness: 0.6
+    contrast: 0.6
+    hue: 0.2
+    saturation: 0.6
+  color_jitter_random_apply:
+    p: 0.6
+  horizontal_flip:
+    p: 0.7
+  normalize:
+    mean:
+    - 0.0
+    - 0.102
+    - 0.041
+    std:
+    - 0.001
+    - 0.059
+    - 0.02
+  random_grayscale:
+    p: 0.6
+  resize:
+    p: 1.0
+    size: 112
+  rotate90:
+    p: 0.7
+  vertical_flip:
+    p: 0.7
+augmentation_strategy: simclr_acs
+backbone: dino_vits16
+backbone_dim: 512
+batch_size: 64
+criterion: simclr
+criterion_kwargs:
+  temperature: 0.1
+epochs: 200
+model_kwargs:
+  features_dim: 128
+  head: mlp
+num_classes: 4
+num_workers: 8
+optimizer: adam
+optimizer_kwargs:
+  lr: 0.001
+pairing_strategy: augmentations
+scheduler: cosine
+scheduler_kwargs:
+  lr_decay_rate: 0.1
+setup: simclr
+train_db_name: crop16_EF_2405_adj_single
+transformation_kwargs:
+  normalize:
+    mean:
+    - 0.0
+    - 0.102
+    - 0.041
+    std:
+    - 0.001
+    - 0.059
+    - 0.02
+val_db_name: crop16_EF_2405_adj_single
