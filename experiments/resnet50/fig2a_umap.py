@@ -84,25 +84,13 @@ def run_umap(features):
 UMAP_features = {}
 PCA_features = {}
 
-# --- Standard SimCLR (results/Standard SimCLR) ---
-# Skipped: the pickle has 21 944 rows and no image names; its row order is given by
-# crop16_EF_2405_adj_single.csv, which was not shared. Without it every point would get
-# the colour of another crop.
-
-# --- Augmented SimCLR / SI-SimCLR (results/SI-SimCLR) ---
-# The pickle has no image names: its 21 872 rows follow the row order of uniDINO.csv
-# (same annotation file, crop16_EF_2405, used for training).
-uni_order = pd.read_csv(os.path.join(emb_dir, 'uniDINO.csv'), usecols=['path'])
-with open(os.path.join(res_dir, 'SI-SimCLR', 'latent_embeddings_train.pickle'), 'rb') as f:
-    raw_emb = pickle.load(f)
-assert len(raw_emb) == len(uni_order), 'SI-SimCLR pickle and uniDINO.csv should have the same number of rows'
-uni_order['row'] = np.arange(len(uni_order))
-rows = align_on_annotations(uni_order, 'path')['row'].values
-raw_emb = raw_emb[rows]
-scaled_emb = StandardScaler().fit_transform(raw_emb)
-UMAP_features['Augmented\nSimCLR'] = run_umap(scaled_emb)
-PCA_features['Augmented\nSimCLR'] = pca.fit_transform(scaled_emb)
-print('Augmented SimCLR done')
+# --- Standard SimCLR and Augmented / SI-SimCLR: CSVs with img_code, shared by the authors ---
+for csv_name, method in [('SimCLR.csv', 'Standard\nSimCLR'), ('SI_SimCLR.csv', 'Augmented\nSimCLR')]:
+    simclr_df = align_on_annotations(pd.read_csv(os.path.join(emb_dir, csv_name)), 'img_code')
+    scaled_emb = StandardScaler().fit_transform(simclr_df[emb_columns(simclr_df)].values)
+    UMAP_features[method] = run_umap(scaled_emb)
+    PCA_features[method] = pca.fit_transform(scaled_emb)
+    print(method.replace('\n', ' '), 'done')
 
 # --- Hand-crafted features: img_code + numeric features only ---
 handcrafted_df = align_on_annotations(pd.read_csv(os.path.join(emb_dir, 'handcrafted.csv')), 'img_code')
@@ -145,39 +133,78 @@ UMAP_features['CellPaint SSL'] = run_umap(scaled_cellpaint_highvar)
 print('CellPaint SSL done')
 
 
-# Define the labels for coloring
-labels = ['cell_line', 'mutation', 'condition', 'experiment']
-order = ['Hand-crafted', 'Pretrained\nResNet18', 'Pretrained\nResNet50', 'Standard\nSimCLR',
-         'uniDINO', 'CellPaint SSL', 'Augmented\nSimCLR']
-UMAP_features = {name: UMAP_features[name] for name in order if name in UMAP_features}
-embeddings_keys = list(UMAP_features.keys())
-palettes = {'cell_line': cell_line_palette, 'mutation': mutation_palette, 'condition': condition_palette, 'experiment': day_palette}
-
-
 ####################################################
-# Figure: one row per method, one column per label
+# Figure, laid out like Fig. 2A of the paper:
+# one column per method (coloured header), one row per label, legends at the bottom
 ####################################################
+from matplotlib.lines import Line2D
 
-fig, axes = plt.subplots(len(embeddings_keys), len(labels), figsize=(20, 5 * len(embeddings_keys)),
-                         constrained_layout=True, squeeze=False)
-print(axes.shape)
+# (key in UMAP_features, header shown on the figure, header colour, header text colour)
+# Order and colours follow the paper; our Pretrained ResNet50 is added next to ResNet18.
+METHODS = [
+    ('Hand-crafted',         'Classic\nimage analysis', '#A9BCD6', 'black'),
+    ('uniDINO',              'ViT-S\nuniDINO',          '#7CC88C', 'black'),
+    ('CellPaint SSL',        'ViT-S\nCellPaint SSL',    '#2F9A47', 'black'),
+    ('Pretrained\nResNet18', 'Pre-trained\nResNet18',   '#D4D4D4', 'black'),
+    ('Pretrained\nResNet50', 'Pre-trained\nResNet50',   '#A6A6A6', 'black'),
+    ('Standard\nSimCLR',     'SimCLR\nResNet18',        '#000000', 'white'),
+    ('Augmented\nSimCLR',    'SI-SimCLR\nResNet18',     '#B39C3D', 'white'),
+]
+METHODS = [m for m in METHODS if m[0] in UMAP_features]  # only the methods that were computed
 
-for i, embedding_key in enumerate(embeddings_keys):  # only the methods that were computed
-    for j, label in enumerate(labels):
-        ax = axes[i, j]
-        ax.scatter(
-            UMAP_features[embedding_key][:, 0],
-            UMAP_features[embedding_key][:, 1],
-            c=global_annotations[label].map(palettes[label]).fillna('#808080'),  # CTRL3 has no colour -> grey
-            s=4,
-            alpha=0.4,
-            rasterized=True,
-        )
-        if j == 0:
-            ax.text(-0.1, 0.5, embedding_key, va='center', ha='right', rotation=90, transform=ax.transAxes, fontsize=28, fontweight='bold')
+# (column of the annotation CSV, row title, legend title, {value in the CSV: name in the legend})
+# Add ('cell_line', 'Cell line', 'Cell line', {...}) here if you also want the cell lines.
+ROWS = [
+    ('experiment', 'Batch',        'Batch',   {'E1': 'E1', 'E2': 'E2', 'E3': 'E3', 'E4': 'E4'}),
+    ('condition',  'Inflammation', 'TIC',     {'untreated': 'Basal', 'A1 low': 'Low', 'A1 high': 'High'}),
+    ('mutation',   'ALS disease',  'Disease', {'CTRL': 'CTRL', 'VCP': 'ALS'}),
+]
+palettes = {'cell_line': cell_line_palette, 'mutation': mutation_palette,
+            'condition': condition_palette, 'experiment': day_palette}
+
+n_cols, n_rows = len(METHODS), len(ROWS)
+fig = plt.figure(figsize=(2.4 * n_cols, 2.4 * n_rows + 1.6))
+gs = fig.add_gridspec(n_rows, n_cols, left=0.05, right=0.99, top=0.84, bottom=0.2, wspace=0.06, hspace=0.06)
+
+for j, (key, header, header_colour, text_colour) in enumerate(METHODS):
+    xy = UMAP_features[key]
+    for i, (column, row_title, _, _) in enumerate(ROWS):
+        ax = fig.add_subplot(gs[i, j])
+        ax.scatter(xy[:, 0], xy[:, 1],
+                   c=global_annotations[column].map(palettes[column]).fillna('#808080'),  # e.g. CTRL3 -> grey
+                   s=1.5, alpha=0.4, linewidths=0, rasterized=True)
         ax.axis('off')
+        if i == 0:   # coloured method header above the first row
+            ax.text(0.5, 1.06, header, transform=ax.transAxes, ha='center', va='bottom',
+                    fontsize=11, color=text_colour,
+                    bbox=dict(boxstyle='round,pad=0.35', fc=header_colour, ec='none'))
+        if j == 0:   # row title on the left
+            ax.text(-0.06, 0.5, row_title, transform=ax.transAxes, ha='right', va='center',
+                    rotation=90, fontsize=12)
+
+fig.text(0.01, 0.97, 'A', fontsize=18, fontweight='bold', va='top')
+
+# UMAP axes arrows (bottom-left); UMAP axes have no units, only the directions matter
+arrow_ax = fig.add_axes([0.04, 0.115, 0.04, 0.06])
+arrow_ax.axis('off')
+arrow_ax.annotate('', xy=(0, 1), xytext=(0, 0), xycoords='axes fraction',
+                  arrowprops=dict(arrowstyle='-|>', lw=2, color='black'))
+arrow_ax.annotate('', xy=(1, 0), xytext=(0, 0), xycoords='axes fraction',
+                  arrowprops=dict(arrowstyle='-|>', lw=2, color='black'))
+
+# One framed legend per row, side by side at the bottom
+legend_x = np.linspace(0.25, 0.8, n_rows)
+for x, (column, _, legend_title, names) in zip(legend_x, ROWS):
+    handles = [Line2D([0], [0], marker='s', linestyle='', markersize=9,
+                      markerfacecolor=palettes[column].get(value, '#808080'), markeredgewidth=0, label=name)
+               for value, name in names.items()]
+    leg = fig.legend(handles=handles, title=legend_title, loc='upper center', bbox_to_anchor=(x, 0.16),
+                     ncol=len(handles), frameon=True, fontsize=10, title_fontsize=11,
+                     handletextpad=0.3, columnspacing=0.8)
+    leg.get_frame().set_edgecolor('#BBBBBB')
+    leg.get_frame().set_linewidth(1.5)
 
 out_pdf = os.path.join(res_dir, 'all_UMAP_zscore.pdf')
-plt.savefig(out_pdf, dpi=300, bbox_inches='tight')
-plt.savefig(out_pdf.replace('.pdf', '.png'), dpi=120, bbox_inches='tight')
+fig.savefig(out_pdf, dpi=300, bbox_inches='tight')
+fig.savefig(out_pdf.replace('.pdf', '.png'), dpi=150, bbox_inches='tight')
 print('Saved', out_pdf)
