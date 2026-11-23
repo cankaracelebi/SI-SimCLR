@@ -48,9 +48,21 @@ BACKBONES = {'resnet18': (resnet18, ResNet18_Weights.IMAGENET1K_V1),   # 512-d f
 
 
 def get_frozen_resnet(name):
-    builder, weights = BACKBONES[name]
-    backbone = builder(weights=weights)
-    backbone.fc = nn.Identity()  # output = pooled features
+    if name == 'dino_vits16':
+        # ViT-S/16 pretrained on ImageNet with DINO (self-supervised); forward returns the 384-d CLS token
+       
+        is_utils = lambda k: k == 'utils' or k.startswith('utils.')
+        ours = {k: sys.modules.pop(k) for k in list(sys.modules) if is_utils(k)}
+        try:
+            backbone = torch.hub.load('facebookresearch/dino:main', 'dino_vits16', trust_repo=True)
+        finally:
+            for k in [k for k in sys.modules if is_utils(k)]:
+                del sys.modules[k]
+            sys.modules.update(ours)
+    else:
+        builder, weights = BACKBONES[name]
+        backbone = builder(weights=weights)
+        backbone.fc = nn.Identity()  # output = pooled features
     for param in backbone.parameters():
         param.requires_grad = False
   
