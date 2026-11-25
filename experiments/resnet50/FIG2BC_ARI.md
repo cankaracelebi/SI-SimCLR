@@ -52,7 +52,7 @@ Original file can be found untouched under `data/annotations_processed_crops_zen
 | Model (name in yaml) | File | Cell alignment |
 |---|---|---|
 | `Pretrained\nResNet50` | `resnet50_imagenet/latent_embeddings_train.pickle` (19 326 × 2048) | No image names. Rows follow Zenodo CSV order (`shuffle=False` at extraction). |
-| `Pretrained\nViT-S` | `vits16_dino_imagenet/latent_embeddings_train.pickle` (19 326 × 384) | No image names. Assumed same pipeline and order as ResNet50 (see below). |
+| `Pretrained\nViT-S` | `vits16_dino_imagenet/latent_embeddings_train.pickle` (19 326 × 384) | No image names. Same extraction script and row order as ResNet50 (see below). |
 | `Standard\nSimCLR` | `SimCLR.csv` (`img_code` + 512 dims) | Via `img_code`. |
 | `Augmented\nSimCLR` (SI-SimCLR) | `SI_SimCLR.csv` (`img_code` + 512 dims) | Via `img_code`. |
 | `hand-crafted` | `handcrafted.csv` | Via `img_code`. |
@@ -65,9 +65,10 @@ An `assert` checks that the ordering of cells is identical for all models.
 
 **Some remarks on the alignments**
 
-- The ViT-S pickle has no image names, so its row order was checked against ResNet50: for 3 000 cells, the 10 nearest neighbours
-  in both embeddings overlap by 11 % with the same row order, vs 2.4 % when shifted by one row and 0.4 % when shuffled (chance).
-  The order is consistent, but this is not a cell-by-cell proof. **To confirm with Can: same extraction script and same CSV as ResNet50.**
+- ViT-S was extracted with the same script as ResNet50 (`extract_resnet50.py` with `backbone: dino_vits16`, commit `b35debf`),
+  so its rows follow the same order (19 326 rows, as in the Zenodo CSV).
+  As an extra check, for 3 000 cells the 10 nearest neighbours in both embeddings overlap by 11 % with the same row order,
+  vs 2.4 % when shifted by one row and 0.4 % when shuffled (chance).
 - The original SimCLR pickles (`240517_11/`, `240813_5/`, ~21 900 rows) have no image names and their order could not be recovered.
   The authors sent `SimCLR.csv` and `SI_SimCLR.csv` with `img_code` instead.
 
