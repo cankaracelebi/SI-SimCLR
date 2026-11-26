@@ -12,7 +12,8 @@ Options:
     --quick                        single UMAP setting, for testing
 
 Results are merged into results/analysis/<ARI_UMAP|ARI_UMAP_batch>/<annotations>/best_umap_kmeans_ari.yaml,
-so models can be computed in separate runs.
+so models can be computed in separate runs. The ARI of every UMAP setting is saved next to it in
+all_umap_kmeans_ari_<target_label>.csv (same columns as the reference all_umap_kmeans_ari_*.csv files).
 """
 import sys
 from pathlib import Path
@@ -288,6 +289,12 @@ aris = Parallel(n_jobs=args.n_jobs, verbose=10)(
 )
 aris = {task: ari for task, ari in zip(tasks, aris)}
 
+# ARI of every UMAP setting, one row per (model, batch, setting)
+all_rows = [{'embedding': name.replace('\n', ' '), 'target_label': TARGET_LABEL, 'batch_mode': BATCH_MODE,
+             'batch': str(batch), 'n_neighbors': int(nn), 'min_dist': float(md), 'k_used': int(current_k),
+             'n_samples': len(current_labels), 'ari': float(aris[((name, batch), nn, md)])}
+            for (name, batch), (_, current_labels, current_k) in slices.items() for nn, md in grid]
+
 # Dictionary to store the best results per embedding set
 best_results = {}
 
@@ -320,5 +327,15 @@ if os.path.exists(output_path):
 
 with open(output_path, 'w') as f:
     yaml.dump(best_results, f)
+
+# save the ARI of every UMAP setting as csv, keeping models computed in previous runs
+all_df = pd.DataFrame(all_rows)
+all_path = os.path.join(output_dir, f"all_umap_kmeans_ari_{TARGET_LABEL}{'_quick' if QUICK else ''}.csv")
+if os.path.exists(all_path):
+    previous_df = pd.read_csv(all_path)
+    previous_df = previous_df[~previous_df['embedding'].isin(all_df['embedding'].unique())]
+    all_df = pd.concat([previous_df, all_df], ignore_index=True)
+all_df.to_csv(all_path, index=False)
+print(f"All UMAP settings saved to {all_path}")
 
 print(f"\nOptimization Complete. Results saved to {output_path}")
