@@ -11,6 +11,8 @@ debug/
 *.pyc
 apptainer/
 
+.virtual_documents/
+anaconda_projects/
 # outputs / artifacts
 img_samples/
 *.html
