@@ -42,10 +42,9 @@ Original files (`embeddings_analysis/…`, `utils/mypalette.py`) were not modifi
 Some columns were renamed to fit the code: `well_row → row`, `well_col → col`, `well_id → well`, `img_id → img_code`.
 Original file can be found untouched under `data/annotations_processed_crops_zenodo_original.csv`.
 
-> ⚠️ **SAME SET OF CELLS AS PAPER? ASKED ON SLACK, waiting for answer.**
-> The original analysis uses `annotations_HDBSCAN_filter_no_adjacent_single.csv` (~21 900 crops, HDBSCAN filter), which we don't have.
-> Meanwhile, **all models were recomputed on the same Zenodo set** so that scores are comparable with each other.
-> Our values are therefore not directly comparable to the ones in the paper.
+**Same set of cells as the paper.** The original script reads `annotations_HDBSCAN_filter_no_adjacent_single.csv`,
+which we don't have, but the authors' reference results (section 6) were computed on exactly the same number of cells
+per batch as above. All models were recomputed on this Zenodo set.
 
 ### Embeddings (`embeddings/`, ignored by git)
 
@@ -71,6 +70,8 @@ An `assert` checks that the ordering of cells is identical for all models.
   vs 2.4 % when shifted by one row and 0.4 % when shuffled (chance).
 - The original SimCLR pickles (`240517_11/`, `240813_5/`, ~21 900 rows) have no image names and their order could not be recovered.
   The authors sent `SimCLR.csv` and `SI_SimCLR.csv` with `img_code` instead.
+- A first version of `SimCLR.csv` / `SI_SimCLR.csv` (23 Nov 2026) was replaced by a new one from the authors (25 Nov 2026),
+  which is the one used for all results below. The first version is kept in `embeddings/archives/`.
 
 ---
 
@@ -98,13 +99,14 @@ Calculations are the same, only code organization changes:
 - option `--annotations` to choose a set of cells; each set gets its own results subfolder;
 - option `--quick` to compute fast test on single UMAP setting;
 - UMAP calculations in parallel on all cores (`--n_jobs`, joblib);
-- results are **added** to existing yaml.
+- results are **added** to existing yaml;
+- the ARI of every UMAP setting is also saved as csv (same columns as the authors' `all_umap_kmeans_ari_*.csv`).
 
 ---
 
 ## 4. Run calculations
 
-Run from repo root, in `si-simclr` env. Runs take up to ~2 h and must not be interrupted by the computer going to sleep:
+Run from repo root, in `si-simclr` env. Runs take up to ~3 h and must not be interrupted by the computer going to sleep:
 
 - run inside tmux (or with `nohup`), so that closing the terminal does not stop the job;
 - prevent sleep during the run:
@@ -128,17 +130,23 @@ caffeinate -i python experiments/resnet50/fig2c_ari.py \
 | Calculation | UMAP fits | Time |
 |---|---|---|
 | 2C, ResNet50 alone | 56 | 40 min |
-| 2B, 7 other models | 98 | 47 min |
-| 2C, 7 other models | 392 | 2 h 10 |
+| 2B, all 8 models | 112 | 1 h 04 |
+| 2C, all 8 models | 448 | 2 h 41 |
 
 ### Results
 
 ```
-results/analysis/ARI_UMAP_batch/annotations_processed_crops/best_umap_kmeans_ari.yaml   # Fig 2B
-results/analysis/ARI_UMAP/annotations_processed_crops/best_umap_kmeans_ari.yaml         # Fig 2C
+results/analysis/ARI_UMAP_batch/annotations_processed_crops/best_umap_kmeans_ari.yaml         # Fig 2B, best setting
+results/analysis/ARI_UMAP_batch/annotations_processed_crops/all_umap_kmeans_ari_experiment.csv # Fig 2B, every setting
+results/analysis/ARI_UMAP/annotations_processed_crops/best_umap_kmeans_ari.yaml               # Fig 2C, best setting
+results/analysis/ARI_UMAP/annotations_processed_crops/all_umap_kmeans_ari_mut_cond.csv        # Fig 2C, every setting
 ```
 
-Each yaml gives, for each model and each batch (`all` for 2B), the best ARI (`ari`), the K used (`k_used`) and the UMAP setting (`n_neighbors`, `min_dist`). With `--quick`, results go into `best_umap_kmeans_ari_quick.yaml`.
+Each yaml gives, for each model and each batch (`all` for 2B), the best ARI (`ari`), the K used (`k_used`) and the UMAP setting (`n_neighbors`, `min_dist`).
+Each csv has one row per model, batch and UMAP setting, with the number of cells (`n_samples`) and the ARI.
+With `--quick`, results go into `*_quick.yaml` / `*_quick.csv`.
+
+Results computed with the first version of the SimCLR / SI-SimCLR embeddings are archived in `results/archives_old_simclr/`.
 
 ---
 
@@ -168,8 +176,8 @@ results/analysis/ARI_figures/annotations_processed_crops/ALS_TIC_ARI.pdf   # Fig
 | CellPaint SSL | 0.038 |
 | **Pretrained ViT-S** | 0.204 |
 | Pretrained ResNet18 | 0.145 |
-| SimCLR | 0.097 |
-| SI-SimCLR | 0.331 |
+| SimCLR | 0.120 |
+| SI-SimCLR | 0.379 |
 | **Pretrained ResNet50** | 0.164 |
 
 **Fig 2C: ARI ALS:TIC per batch (higher is better)**
@@ -181,21 +189,34 @@ results/analysis/ARI_figures/annotations_processed_crops/ALS_TIC_ARI.pdf   # Fig
 | CellPaint SSL | 0.046 | 0.018 | 0.009 | 0.006 | 0.020 |
 | **Pretrained ViT-S** | 0.140 | 0.128 | 0.250 | 0.066 | 0.146 |
 | Pretrained ResNet18 | 0.112 | 0.125 | 0.111 | 0.064 | 0.103 |
-| SimCLR | 0.064 | 0.082 | 0.065 | 0.043 | 0.064 |
-| SI-SimCLR | 0.169 | 0.223 | 0.183 | 0.104 | 0.170 |
+| SimCLR | 0.074 | 0.083 | 0.165 | 0.046 | 0.092 |
+| SI-SimCLR | 0.194 | 0.224 | 0.678 | 0.113 | 0.302 |
 | **Pretrained ResNet50** | 0.112 | 0.112 | 0.148 | 0.063 | 0.109 |
+
+### Comparison with the authors' results
+
+The authors shared their Fig 2C results (best setting per model and batch, and every UMAP setting for
+hand-crafted, SimCLR and SI-SimCLR). Same number of cells per batch as ours.
+
+- **Best ARI** (6 models × 4 batches): all within 0.02 of ours.
+- **Every UMAP setting** (168 settings): 92 % within 0.02 of ours. The largest differences are on SI-SimCLR E3
+  (up to 0.24, e.g. nn=50, md=0.001: 0.656 ours vs 0.418 theirs). Their own best-setting file gives 0.668 for that setting,
+  so their two files come from different runs: SI-SimCLR on E3 is sensitive to small numerical differences in UMAP.
+- The remaining small differences are expected: UMAP results are not bit-identical across machines and library versions.
+  On the same machine, rerunning gives exactly the same values.
 
 ### Observations
 
+- **SI-SimCLR** is the best model for 2C on all 4 batches (mean 0.302), with a very high ARI on E3 (0.678).
+- **ViT-S (DINO)** is second for 2C (mean 0.146), ahead of both ResNets and of uniDINO, which is DINO trained on cell images.
 - **ResNet50** has similar results to ResNet18.
-- **ViT-S (DINO)** is the second best model for 2C, mean close to SI-SimCLR (0.146 vs 0.170).
-  Its mean is driven by E3; SI-SimCLR is higher on 3 of 4 batches.
-- The two best models in 2C, **SI-SimCLR and ViT-S, also have the strongest batch effect** in 2B (0.331 and 0.204).
+- The two best models in 2C, **SI-SimCLR and ViT-S, also have the strongest batch effect** in 2B (0.379 and 0.204).
 
 ### Limitations
 
 - **Optimistic scores**: the best of 14 UMAP settings is kept (same bias for all models).
-- **Single random seed** for UMAP and K-means: small differences between models may not be robust.
+- **Single random seed** for UMAP and K-means: small differences between models may not be robust
+  (see the SI-SimCLR E3 differences above).
 - **Only 4 batches** in 2C: no statistical test between models is possible.
 
 ---
